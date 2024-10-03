@@ -8,43 +8,37 @@
 import React from 'react';
 import type {PropsWithChildren} from 'react';
 import {
-  FlatList,
   SafeAreaView,
-  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   useColorScheme,
   View,
+  Image as RNImage,
+  FlatList,
 } from 'react-native';
-import FastImage from 'react-native-fast-image';
-import Animated from 'react-native-reanimated';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 type SectionProps = PropsWithChildren<{
   title: string;
 }>;
 
 const Image = () => (
-  <FastImage
+  <RNImage
     style={{width: 200, height: 200}}
     source={{
       uri: 'https://unsplash.it/400/400?image=2',
       headers: {Authorization: 'someAuthToken'},
-      priority: FastImage.priority.normal,
+      // priority: FastImage.priority.normal,
     }}
-    resizeMode={FastImage.resizeMode.contain}
+    // resizeMode={FastImage.resizeMode.contain}
   />
 );
+
 function Section({children, title}: SectionProps): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
+
   return (
     <View style={styles.sectionContainer}>
       <Text
@@ -83,50 +77,49 @@ function Settings(): React.JSX.Element {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-      <Animated.FlatList
+      <FlatList
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}
         removeClippedSubviews
         windowSize={5}
         data={Array.from({length: 100}).fill(0)}
         renderItem={({index}) =>
-          index === 0 ? (
-            <Header />
-          ) : index === 10 ? (
-            <ScrollView
-              horizontal
-              contentInsetAdjustmentBehavior="automatic"
-              style={backgroundStyle}>
-              <Header />
-              <View
-                style={{
-                  backgroundColor: isDarkMode ? Colors.black : Colors.white,
-                }}>
-                <Section title="Step One">
-                  Edit <Text style={styles.highlight}>App.tsx</Text> to change
-                  this screen and then come back to see your edits.
-                </Section>
-                <Section title="See Your Changes">
-                  <ReloadInstructions />
-                </Section>
-                <Section title="Debug">
-                  <DebugInstructions />
-                </Section>
-                <Section title="Learn More">
-                  Read the docs to discover what to do next:
-                </Section>
-                <LearnMoreLinks />
-              </View>
-            </ScrollView>
+          index === 10 ? (
+            <>
+              <ChildFlatlist />
+            </>
           ) : (
             <Section title="Step One">
-              Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-              screen and then come back to see your edits. {index}
+              Scroll down at list to 30 this is item:{index}
             </Section>
           )
         }
       />
     </SafeAreaView>
+  );
+}
+
+function ChildFlatlist(): React.JSX.Element {
+  const isDarkMode = useColorScheme() === 'dark';
+
+  const backgroundStyle = {
+    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  };
+
+  return (
+    <FlatList
+      contentInsetAdjustmentBehavior="automatic"
+      style={backgroundStyle}
+      removeClippedSubviews
+      windowSize={5}
+      data={Array.from({length: 100}).fill(0)}
+      renderItem={({index}) => (
+        <Section title="Step tow">
+          Edit <Text style={styles.highlight}>App.tsx</Text> to change this
+          screen and then come back to see your edits. {index}
+        </Section>
+      )}
+    />
   );
 }
 
